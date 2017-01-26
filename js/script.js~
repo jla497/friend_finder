@@ -1,0 +1,134 @@
+var mapObject;
+var username = "user2";
+var friendMarkers = [];
+var myPosition = {
+	  	lat: 0,
+	  	long: 0
+	  }
+	  
+
+$(document).ready(function(){
+	
+	var model = {
+	  
+		init: function(){
+			   
+			   mapObject = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -49.2527889, lng: -122.83931},
+          zoom: 8
+        });
+         var directionsRender = new google.maps.DirectionsRenderer();
+         var url = "https://jaesportfolio.com/projects/connectDB.php";
+         //fetch all friends JSON objects
+       
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+                var data = $.parseJSON(this.responseText);
+                addFriendMarkers(data);
+            }
+        };
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+         
+         
+		},
+		
+		searchFriends: function(friend){
+			
+		},
+	 
+	};
+	
+	var octopus = {
+		init: function(){
+			
+			getLocation(function(latitude,longitude){
+				myPosition.lat = latitude;
+				myPosition.long = longitude;
+				var url = "https://jaesportfolio.com/projects/postDB.php?name="+username+"&lat="+myPosition.lat+"&long="+myPosition.long;
+				$.get(url,function(data,status){
+					{console.log("Data: "+data+" status: "+status);}
+				});
+			
+			});
+			model.init();
+			view.init();
+			
+			},
+		 
+		 getPlaces: function(filters){
+		 	return model.getAll(filters);
+		 }
+		 
+		 
+	};
+	
+	var view = {
+	
+		init: function(){
+				
+		},
+		
+		view: function(){}
+	};
+
+	octopus.init();
+});
+
+function showLocation(position){
+	 myPosition.lat = position.coords.latitude;
+	 myPosition.long = position.coords.longitude;
+	 console.log(myPosition.lat);
+	 console.log(myPosition.long);
+	 
+}
+
+
+function errorHandler(err) {
+            if(err.code == 1) {
+               alert("Error: Access is denied!");
+            }
+
+            else if( err.code == 2) {
+               alert("Error: Position is unavailable!");
+            }
+         }
+
+function getLocation(_callback){
+
+            if(navigator.geolocation){
+               // timeout at 60000 milliseconds (60 seconds)
+               var options = {timeout:60000};
+               navigator.geolocation.getCurrentPosition(function(position){
+               		_callback(position.coords.latitude,position.coords.longitude);
+               }, errorHandler, options);
+            }
+
+            else{
+               alert("Sorry, browser does not support geolocation!");
+            }
+ }
+
+function addFriendMarkers(friendLocs){
+        for(var idx = 0; idx<friendMarkers.length;idx++)
+	{
+		friendMarkers[idx].setMap(null);
+	}
+	friendMarkers = [];
+        //console.log("busLocs: "+busLocs);
+        for(var x = 0;x<friendLocs.length;x++)
+        {       console.log("friend marker:"+friendLocs[x].name," ,"+friendLocs[x].lat);
+                var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(friendLocs[x].lat, friendLocs[x].long),
+                        map: mapObject,
+											  label: friendLocs[x].name
+                });
+               // marker.setMap(mapObject);
+                friendMarkers.push(marker);
+        }
+
+    }
+
+
