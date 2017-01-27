@@ -102,9 +102,7 @@ $(document).ready(function(){
             
           }
           mapObject.fitBounds(bounds); 
-        });
-       
-        model.getFriends();  
+        }); 
           
      },
           
@@ -120,7 +118,7 @@ $(document).ready(function(){
             if (this.readyState == 4 && this.status == 200) {
                 console.log(this.responseText);
                  friendData = $.parseJSON(this.responseText);
-                //addFriendMarkers(data);
+                addFriendMarkers(friendData);
             }
         };
         xmlhttp.open("GET", url, true);
@@ -152,7 +150,7 @@ $(document).ready(function(){
 	
 	var octopus = {
 		init: function(){
-			username = "<?php echo $_SESSION['username']?>";
+			console.log("username: "+username);
 			getLocation(function(latitude,longitude){
 				myPosition.lat = latitude;
 				myPosition.long = longitude;
@@ -179,7 +177,7 @@ $(document).ready(function(){
 		init: function(){
 				$("#viewAllFriends").click(function(){
 						model.getFriends();
-						addFriendMarkers(friendData);
+						//addFriendMarkers(friendData);
 						
 						for(var i = 0;i<places.length;i++)
 						{
@@ -247,14 +245,3 @@ function addFriendMarkers(friendLocs){
 
 	octopus.init();
 });
-
-
-
-
-
-
-
-
-
-
-
