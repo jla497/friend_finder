@@ -8,3 +8,4 @@ https://jaesportfolio.com/projects/login.php
 2. Add me as your friend.
 3. You can then view my previous geolocation on google map.
 4. Search for places nearby you.
+5. Click on one of those places and you will receive a direction service from your current location.
